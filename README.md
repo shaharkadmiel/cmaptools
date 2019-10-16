@@ -42,7 +42,7 @@ cmap.preview(-10, 8)
 
     globe <class 'cmaptools.DynamicColormap'>
 
-![png](output_3_1.png)
+![png](Examples/images/output_3_1.png)
 
 
 In the above example, the `globe.cpt` cpt file bundled with GMT is normalized between -1 and 1 with a hinge at 0:
@@ -91,7 +91,7 @@ ax.set_xlabel('no norm information')
 
     mby <class 'matplotlib.colors.LinearSegmentedColormap'>
 
-![png](output_6_2.png)
+![png](Examples/images/output_6_2.png)
 
 
 `readcpt` by default assumes `hinge=0` so if the values in a cpt file range from negative to positive values, color segments are parsed and scaled to account for the hinge value even if the range is not symmetric around it:
@@ -106,7 +106,7 @@ cmap.preview(-10, 8)
 
     mby <class 'cmaptools.DynamicColormap'>
 
-![png](output_8_1.png)
+![png](Examples/images/output_8_1.png)
 
 
 As before, the top colorbar shows the matplotlib version of the scaled colormap so that the hinge, eventhough not in the middle of the range in the original cpt file, is mapped to 0.5. Middle colorbar shows the colormap with its original norm and the bottom colorbar is shows how this colormap would look like if scaled between vmin=-10 and vmax=8
@@ -132,7 +132,7 @@ cmap.preview(-10, 8)
     dem2 <class 'matplotlib.colors.LinearSegmentedColormap'>
     seafloor->dem2 <class 'cmaptools.DynamicColormap'>
 
-![png](output_11_1.png)
+![png](Examples/images/output_11_1.png)
 
 
 Note that `cmap1` and `cmap2` are normal colormap instances of `LinearSegmentedColormap` while the joined colormap is `DynamicColormap`.
@@ -148,7 +148,7 @@ cmap.preview(-8, 5, 0)
 
     Blues_r->pink_r <class 'cmaptools.DynamicColormap'>
 
-![png](output_14_1.png)
+![png](Examples/images/output_14_1.png)
 
 
 or a matplotlib colormap and a GMT cpt file:
@@ -170,7 +170,7 @@ cmap.preview(-10, 8)
     dem2 <class 'matplotlib.colors.LinearSegmentedColormap'>
     cool_r->dem2 <class 'cmaptools.DynamicColormap'>
 
-![png](output_16_1.png)
+![png](Examples/images/output_16_1.png)
 
 
 Any colormap can be made dynamic:
@@ -187,7 +187,7 @@ cmap.preview(-8, 2, 0)
     seismic <class 'matplotlib.colors.LinearSegmentedColormap'>
     seismic <class 'cmaptools.DynamicColormap'>
 
-![png](output_18_1.png)
+![png](Examples/images/output_18_1.png)
 
 
 this is handy when the data being plotted is not symmetric around the hinge value.
@@ -206,7 +206,7 @@ cmap.preview(-8, 5, 2)
     jet <class 'matplotlib.colors.LinearSegmentedColormap'>
     jet <class 'cmaptools.DynamicColormap'>
 
-![png](output_21_1.png)
+![png](Examples/images/output_21_1.png)
 
 
 ## Examples with topography and bathymetry
@@ -267,7 +267,7 @@ plt.contour(topo.elevation, levels=[0],
             extent=topo.extent)
 ```
 
-![png](output_25_1.png)
+![png](Examples/images/output_25_1.png)
 
 
 
@@ -290,7 +290,7 @@ plt.contour(topo.elevation, levels=[0],
             extent=topo.extent)
 ```
 
-![png](output_26_1.png)
+![png](Examples/images/output_26_1.png)
 
 
 
@@ -317,7 +317,7 @@ plt.contour(topo.elevation, levels=[0],
             extent=topo.extent)
 ```
 
-![png](output_27_1.png)
+![png](Examples/images/output_27_1.png)
 
 
 
@@ -339,7 +339,7 @@ plt.contour(topo.elevation, levels=[0],
             extent=topo.extent)
 ```
 
-![png](output_28_1.png)
+![png](Examples/images/output_28_1.png)
 
 
 ## Examples with data
@@ -375,7 +375,7 @@ plt.contour(z, levels=[0],
             extent=extent)
 ```
 
-![png](output_32_1.png)
+![png](Examples/images/output_32_1.png)
 
 
 Note how the colormap diverges from white but because the min/max of the data is not symmetric around 0, white is not at the center.
@@ -394,7 +394,7 @@ plt.contour(z, levels=[0],
             extent=extent)
 ```
 
-![png](output_34_1.png)
+![png](Examples/images/output_34_1.png)
 
 
 However, the positive part of the data is now pale as some dynamic range is lost.
@@ -417,4 +417,4 @@ plt.contour(z, levels=[0],
             extent=extent)
 ```
 
-![png](output_36_1.png)
+![png](Examples/images/output_36_1.png)
