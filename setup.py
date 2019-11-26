@@ -22,7 +22,7 @@ try:
     from numpy.distutils.core import setup
 except ImportError:
     msg = ('No module named numpy. Please install numpy first, it is '
-           'needed before installing pysabeam.')
+           'needed before installing cmaptools.')
     raise ImportError(msg)
 
 
@@ -77,6 +77,7 @@ def setup_package():
             'Programming Language :: Python',
             'Topic :: Software Development :: Libraries :: Python Modules',
             'Topic :: Scientific/Engineering',
+            'Topic :: Scientific/Engineering :: Visualization',
             'Operating System :: OS Independent'
         ],
     )
