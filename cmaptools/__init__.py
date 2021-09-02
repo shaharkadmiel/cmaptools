@@ -20,16 +20,40 @@ from __future__ import absolute_import, print_function, division
 
 import os
 import numpy as np
+
+# DivergingNorm was introduced in matplotlib 3.1.0 and was renamed to
+# TwoSlopeNorm in matplotlib 3.2.0. I try to import one or the other and
+# call it TwoSlopeNorm from now
+try:
+    from matplotlib.colors import DivergingNorm as TwoSlopeNorm
+except ImportError:
+    from matplotlib.colors import TwoSlopeNorm
+
 from matplotlib.colors import (
-    Colormap, LinearSegmentedColormap, ListedColormap, hsv_to_rgb,
-    Normalize, DivergingNorm
+    Colormap, LinearSegmentedColormap, ListedColormap,
+    to_rgba, hsv_to_rgb, Normalize
 )
+
 from matplotlib.colorbar import ColorbarBase
 import matplotlib.pyplot as plt
 
 import re
 
 from .gmtcolors import GMT_COLOR_NAMES
+
+
+# Version
+try:
+    # - Released versions just tags:       1.10.0
+    # - GitHub commits add .dev#+hash:     1.10.1.dev3+g973038c
+    # - Uncom. changes add timestamp: 1.10.1.dev3+g973038c.d20191022
+    from .version import version as __version__
+except ImportError:
+    # If it was not installed, then we don't know the version.
+    # We could throw a warning here, but this case *should* be
+    # rare. empymod should be installed properly!
+    from datetime import datetime
+    __version__ = 'unknown-'+datetime.today().strftime('%Y%m%d')
 
 
 class DynamicColormap(Colormap):
@@ -102,7 +126,7 @@ class DynamicColormap(Colormap):
 
     @property
     def norm(self):
-        return DivergingNorm(
+        return TwoSlopeNorm(
             vmin=self.vmin, vcenter=self.hinge, vmax=self.vmax
         )
 
@@ -250,7 +274,7 @@ def _parse_color_segments(segments, name, hinge=0, colormodel='RGB', N=256):
 
     if hinge is not None and x[0] < hinge < x[-1]:
         cmap_type = 'dynamic'
-        norm = DivergingNorm(vmin=x[0], vcenter=hinge, vmax=x[-1])
+        norm = TwoSlopeNorm(vmin=x[0], vcenter=hinge, vmax=x[-1])
         hinge_index = np.abs(x - hinge).argmin()
     else:
         cmap_type = 'normal'
@@ -370,4 +394,58 @@ def joincmap(cmap1, cmap2, N=256):
     return DynamicColormap(cmap)
 
 
-__version__ = '1'
+def colorname2rgba(color, GMT_colorname=False):
+    """
+    Get the rgba value of a colorname.
+
+    By default, `matplotlib colors`_ are searched first and if color is
+    not found the GMT color lookup table is searched. Set
+    ``GMT_colorname`` to `True` to first search the GMT colors
+    lookup table and fallback to the matplotlib colors.
+
+    .. _matplotlib colors: https://matplotlib.org/3.1.0/tutorials/colors/colors.html#specifying-colors
+    """
+    if GMT_colorname:
+        try:
+            rgba = to_rgba(np.array(GMT_COLOR_NAMES[color]) / 255)
+        except KeyError:
+            rgba = to_rgba(color)
+
+    else:
+        try:
+            rgba = to_rgba(color)
+        except ValueError:
+            rgba = to_rgba(np.array(GMT_COLOR_NAMES[color]) / 255)
+    return np.array(rgba)
+
+
+def extend_cmap(cmap, color, fraction=0.05, extend='min',
+                GMT_colorname=False):
+    """
+    Extent an existing colormap with a single color.
+    """
+    if isinstance(cmap, str):
+        cmap = plt.get_cmap(cmap)
+
+    N = cmap.N
+    n = int(N * fraction)
+
+    if isinstance(color, str):
+        color = colorname2rgba(color, GMT_colorname)
+
+    cmap = cmap(np.arange(N))
+    extention = color * np.ones((n, 4))
+
+    if extend == 'min':
+        for i in range(3):
+            extention[:, i] = np.linspace(extention[0, i], cmap[0, i], n)
+
+        cmap = ListedColormap(np.vstack((extention, cmap)))
+
+    elif extend == 'max':
+        for i in range(3):
+            extention[:, i] = np.linspace(cmap[-1, i], extention[-1, i], n)
+
+        cmap = ListedColormap(np.vstack((cmap, extention)))
+
+    return cmap
