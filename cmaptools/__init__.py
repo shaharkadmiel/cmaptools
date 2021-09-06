@@ -261,7 +261,7 @@ def _parse_color_segments(segments, name, hinge=0, colormodel='RGB', N=256):
     if colormodel == "HSV":
         for i in range(r.shape[0]):
             # convert HSV to RGB
-            rr, gg, bb = hsv_to_rgb(r[i] / 360., g[i], b[i])
+            rr, gg, bb = hsv_to_rgb([r[i] / 360., g[i], b[i]])
             r[i] = rr
             g[i] = gg
             b[i] = bb
